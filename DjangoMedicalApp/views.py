@@ -105,6 +105,12 @@ class MedicineViewSet(viewsets.ViewSet):
             serializer = MedicineSerializer(data = request.data,context={"request":request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
+
+            medicine_id = serializer.data['id']
+            medicine_details_list = []
+            for medicine_details in request.data["medicine_details"]:
+                print("Medicine_details")
+
             response_dict= {"error":False,"message":"Medicine data save successfully"}
         except:
             response_dict= {"error":True,"message":"Error during saving Medicine data"}
