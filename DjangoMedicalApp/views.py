@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import viewsets
 from rest_framework.response import Response
 from DjangoMedicalApp.models import Company
@@ -9,6 +11,8 @@ from DjangoMedicalApp.serializers import ComapnySerializer
 # Create your views here.
 # company view 
 class ComapnyViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     # list,create,update company data
     def list(self,request):
         company = Company.objects.all()
@@ -36,6 +40,9 @@ class ComapnyViewSet(viewsets.ViewSet):
         except:
             response_dict= {"error":True,"message":"Error during updating company data"}
 
+        return Response(response_dict)
+
     
 company_list = ComapnyViewSet.as_view({"get":"list"})
 company_create = ComapnyViewSet.as_view({"post":"create"})
+company_update = ComapnyViewSet.as_view({"put":"update"})
