@@ -28,7 +28,7 @@ class ComapnyViewSet(viewsets.ViewSet):
         return Response(response_dict)
     def create(self,request):
         try:
-            serializer = ComapnySerializer(data = request.data,context={"request":request})
+            serializer = CompanySerializer(data = request.data,context={"request":request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
             response_dict= {"error":False,"message":"Company data save successfully"}
@@ -40,7 +40,7 @@ class ComapnyViewSet(viewsets.ViewSet):
         try:
             queryset =  Company.objects.all()
             company = get_object_or_404(queryset,pk=pk)
-            serializer = ComapnySerializer(company,data = request.data,context={"request":request})
+            serializer = CompanySerializer(company,data = request.data,context={"request":request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
             response_dict= {"error":True,"message":"Successfully updated company data"}
