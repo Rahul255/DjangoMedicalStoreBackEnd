@@ -35,19 +35,19 @@ class ComapnyViewSet(viewsets.ViewSet):
         except:
             response_dict= {"error":True,"message":"Error during saving company data"}
         return Response(response_dict)
-    def retrieve(self,request,pk=None):
-        queryset = Company.objects.all()
-        company = get_object_or_404(queryset,pk=pk)
-        serializer = CompanySerializer(company, context={"request":request})
 
-        serializer_data=serializer.data
-        # Accessing All the company  Details of Current Medicine ID
+    def retrieve(self, request, pk=None):
+        queryset = Company.objects.all()
+        company = get_object_or_404(queryset, pk=pk)
+        serializer = CompanySerializer(company, context={"request": request})
+
+        serializer_data = serializer.data
+        # Accessing All the Medicine Details of Current Medicine ID
         company_bank_details = CompanyBank.objects.filter(company_id=serializer_data["id"])
         companybank_details_serializers = CompanyBankSerializer(company_bank_details, many=True)
         serializer_data["company_bank"] = companybank_details_serializers.data
 
-
-        return Response({"error":False,"message":"Single Data Fetch","data":serializer.data})
+        return Response({"error": False, "message": "Single Data Fetch", "data": serializer_data})
 
     def update(self,request,pk=None):
         try:
