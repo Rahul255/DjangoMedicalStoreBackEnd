@@ -18,7 +18,7 @@ from django.urls import path,include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from DjangoMedicalApp import views
-from DjangoMedicalApp.views import CompanyNameViewSet,MedicineViewSet
+from DjangoMedicalApp.views import CompanyNameViewSet,MedicineViewSet,CompanyOnlyViewSet
 
 router = routers.DefaultRouter()
 router.register("company",views.ComapnyViewSet, basename="company")
@@ -32,5 +32,7 @@ urlpatterns = [
     path('api/gettoken/',TokenObtainPairView.as_view(), name='gettoken'),
     path('api/refresh_token/',TokenRefreshView.as_view(), name='refresh_token'),
     path('api/companybyname/<str:name>',CompanyNameViewSet.as_view(), name='companybyname'),
+    path('api/companyonly/',CompanyOnlyViewSet.as_view(), name='companyonly'),
+
 
 ]

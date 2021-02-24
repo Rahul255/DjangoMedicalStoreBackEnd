@@ -109,6 +109,12 @@ class CompanyNameViewSet(generics.ListAPIView):
         name = self.kwargs["name"]
         return Company.objects.filter(name=name)
 
+class CompanyOnlyViewSet(generics.ListAPIView):
+    serializer_class = CompanySerializer
+
+    def get_queryset(self):
+        return Company.objects.all()
+
 class MedicineViewSet(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
