@@ -121,28 +121,31 @@ class MedicineViewSet(viewsets.ViewSet):
 
     def create(self,request):
         try:
-            serializer = MedicineSerializer(data = request.data,context={"request":request})
+            serializer=MedicineSerliazer(data=request.data,context={"request":request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
-            medicine_id = serializer.data['id']
-            #adding and saving id into medicine table
-            medicine_details_list = []
-            for medicine_details in request.data["medicine_details"]:
+            medicine_id=serializer.data['id']
+            #Access The Serializer Id Which JUSt SAVE in OUR DATABASE TABLE
+            #print(medicine_id)
+
+            #Adding and Saving Id into Medicine Details Table
+            medicine_details_list=[]
+            for medicine_detail in request.data["medicine_details"]:
                 print(medicine_detail)
                 #Adding medicine id which will work for medicine details serializer
                 medicine_detail["medicine_id"]=medicine_id
                 medicine_details_list.append(medicine_detail)
                 print(medicine_detail)
 
-            serializer2 = MedicalDetailsSerializer(data=medicine_details_list,many=True,context={"request":request})
+            serializer2=MedicalDetailsSerializer(data=medicine_details_list,many=True,context={"request":request})
             serializer2.is_valid()
             serializer2.save()
 
-            response_dict= {"error":False,"message":"Medicine data save successfully"}
+            dict_response={"error":False,"message":"Medicine Data Save Successfully"}
         except:
-            response_dict= {"error":True,"message":"Error during saving Medicine data"}
-        return Response(response_dict)
+            dict_response={"error":True,"message":"Error During Saving Medicine Data"}
+        return Response(dict_response)
 
     def list(self,request):
         medicine = Medicine.objects.all()
@@ -177,17 +180,30 @@ class MedicineViewSet(viewsets.ViewSet):
         return Response({"error":False,"message":"Single Data Fetch","data":serializer.data})
 
     def update(self,request,pk=None):
-        try:
             queryset =  Medicine.objects.all()
             medicine = get_object_or_404(queryset,pk=pk)
             serializer = MedicineSerializer(medicine,data = request.data,context={"request":request})
-            serializer.is_valid(raise_exception=True)
+            serializer.is_valid()
             serializer.save()
-            response_dict= {"error":True,"message":"Successfully updated medicine data"}
-        except:
-            response_dict= {"error":True,"message":"Error during updating medicine data"}
+            #print(request.data["medicine_details"])
+            for salt_detail in request.data["medicine_details"]:
+                if salt_detail["id"] == 0:
+                    #for insert new salt details
+                    del salt_detail["id"]
+                    salt_detail["medicine_id"] = serializer.data["id"]
+                    serializer2=MedicalDetailsSerializer(data=salt_detail,context={"request":request})
+                    serializer2.is_valid()
+                    serializer2.save()
+                else:
+                    #for update salt details
+                    queryset2 = MedicalDetails.objects.all()
+                    medicine_salt = get_object_or_404(queryset2,pk=salt_detail["id"])
+                    del salt_detail["id"]
+                    serializer3=MedicalDetailsSerializer(medicine_salt,data=salt_detail,context={"request":request})
+                    serializer3.is_valid()
+                    serializer3.save()
+            return Response({"error":False,"message":"Data has been upddated"})
 
-        return Response(response_dict)
     
 company_list = ComapnyViewSet.as_view({"get":"list"})
 company_create = ComapnyViewSet.as_view({"post":"create"})
