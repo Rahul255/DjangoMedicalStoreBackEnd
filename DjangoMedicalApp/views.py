@@ -240,6 +240,41 @@ class CompanyAccountViewSet(viewsets.ViewSet):
             serializer.save()
             return Response({"error":False,"message":"Data has been upddated"})
 
+#mployee view set
+class EmployeeViewset(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def create(self,request):
+        try:
+            serializer = EmployeeSerializer(data = request.data,context={"request":request})
+            serializer.is_valid()
+            serializer.save()
+            response_dict= {"error":False,"message":"Employee data save successfully"}
+        except:
+            response_dict= {"error":True,"message":"Error during saving employee data"}
+        return Response(response_dict)
+
+    def list(self,request):
+        employee = Employee.objects.all()
+        serializer = EmployeeSerializer(employee,many=True,context={"request":request})
+        response_dict= {"error":False,"message":"All Employee List Data","data":serializer.data}
+        return Response(response_dict)
+
+    def retrieve(self,request,pk=None):
+        queryset = Employee.objects.all()
+        employee = get_object_or_404(queryset,pk=pk)
+        serializer = EmployeeSerializer(employee, context={"request":request})
+        return Response({"error":False,"message":"Single Data Fetch","data":serializer.data})
+
+    def update(self,request,pk=None):
+            queryset =  Employee.objects.all()
+            employee = get_object_or_404(queryset,pk=pk)
+            serializer = EmployeeSerializer(employee,data = request.data,context={"request":request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({"error":False,"message":"Data has been upddated"})
+
     
 company_list = ComapnyViewSet.as_view({"get":"list"})
 company_create = ComapnyViewSet.as_view({"post":"create"})

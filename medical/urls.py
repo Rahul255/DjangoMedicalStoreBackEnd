@@ -25,6 +25,7 @@ router.register("company",views.ComapnyViewSet, basename="company")
 router.register("companybank",views.CompanyBankViewSet, basename="companybank")
 router.register("medicine",views.MedicineViewSet, basename="medicine")
 router.register("companyaccount",views.CompanyAccountViewSet, basename="companyaccount")
+router.register("employee",views.EmployeeViewset, basename="employee")
 
 
 urlpatterns = [
