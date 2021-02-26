@@ -204,6 +204,42 @@ class MedicineViewSet(viewsets.ViewSet):
                     serializer3.save()
             return Response({"error":False,"message":"Data has been upddated"})
 
+
+#company account view set
+class CompanyAccountViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def create(self,request):
+        try:
+            serializer = CompanyAccountSerializer(data = request.data,context={"request":request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            response_dict= {"error":False,"message":"Company account data save successfully"}
+        except:
+            response_dict= {"error":True,"message":"Error during saving company account data"}
+        return Response(response_dict)
+
+    def list(self,request):
+        companyaccount = CompanyAccount.objects.all()
+        serializer = CompanyAccountSerializer(companyaccount,many=True,context={"request":request})
+        response_dict= {"error":False,"message":"All Company Account List Data","data":serializer.data}
+        return Response(response_dict)
+
+    def retrieve(self,request,pk=None):
+        queryset = CompanyAccount.objects.all()
+        companyaccount = get_object_or_404(queryset,pk=pk)
+        serializer = CompanyAccountSerializer(companyaccount, context={"request":request})
+        return Response({"error":False,"message":"Single Data Fetch","data":serializer.data})
+
+    def update(self,request,pk=None):
+            queryset =  CompanyAccount.objects.all()
+            companyaccount = get_object_or_404(queryset,pk=pk)
+            serializer = CompanyAccountSerializer(companyaccount,data = request.data,context={"request":request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({"error":False,"message":"Data has been upddated"})
+
     
 company_list = ComapnyViewSet.as_view({"get":"list"})
 company_create = ComapnyViewSet.as_view({"post":"create"})
