@@ -359,9 +359,8 @@ class EmployeeSalaryByEIDViewSet(generics.ListAPIView):
     serializer_class = EmployeeSalarySerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-
     def get_queryset(self):
-        employee_id = self.kwargs["employee_id"]
+        employee_id=self.kwargs["employee_id"]
         return EmployeeSalary.objects.filter(employee_id=employee_id)
 
     

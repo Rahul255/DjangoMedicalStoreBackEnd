@@ -13,12 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from DjangoMedicalApp import views
-from DjangoMedicalApp.views import CompanyNameViewSet,MedicineViewSet,CompanyOnlyViewSet
+from DjangoMedicalApp.views import CompanyNameViewSet, CompanyOnlyViewSet
 
 router = routers.DefaultRouter()
 router.register("company",views.ComapnyViewSet, basename="company")
@@ -27,8 +29,8 @@ router.register("medicine",views.MedicineViewSet, basename="medicine")
 router.register("companyaccount",views.CompanyAccountViewSet, basename="companyaccount")
 router.register("employee",views.EmployeeViewset, basename="employee")
 router.register("employee_all_bank",views.EmployeeBankViewset, basename="employee_all_bank")
-router.register("employee_all_salary",views.EmployeeSalaryViewset, basename="employee_all_salary")
-router.register("employee_bankby_id",views.EmployeeBankByEIDViewSet, basename="employee_bankby_id")
+router.register("employee_all_bank",views.EmployeeBankViewset,basename="employee_all_bank")
+router.register("employee_all_salary",views.EmployeeSalaryViewset,basename="employee_all_salary")
 router.register("employee_salaryby_id",views.EmployeeSalaryByEIDViewSet, basename="employee_salaryby_id")
 
 
@@ -39,8 +41,8 @@ urlpatterns = [
     path('api/refresh_token/',TokenRefreshView.as_view(), name='refresh_token'),
     path('api/companybyname/<str:name>',CompanyNameViewSet.as_view(), name='companybyname'),
     path('api/companyonly/',CompanyOnlyViewSet.as_view(), name='companyonly'),
-    path('api/employee_bankby_id/<str:employee_id>',views.EmployeeBankByEIDViewSet.as_view(), name='employee_bankby_id'),
-    path('api/employee_salaryby_id/<str:employee_id>',views.EmployeeSalaryByEIDViewSet.as_view(), name='employee_salaryby_id'),
+    path('api/employee_bankby_id/<str:employee_id>',EmployeeBankByEIDViewSet,name="employee_bankby_id"),
+    path('api/employee_salaryby_id/<str:employee_id>',EmployeeSalaryByEIDViewSet,name="employee_salaryby_id"),
 
 
 ]
