@@ -346,6 +346,15 @@ class EmployeeSalaryViewset(viewsets.ViewSet):
             return Response({"error":False,"message":"Data has been upddated"})
 
 #custom view set for accessing the data of salary and employee bank account using employee id
+class EmployeeSalaryByEIDViewSet(generics.ListAPIView):
+    serializer_class = EmployeeSalarySerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        employee_id=self.kwargs["employee_id"]
+        return EmployeeSalary.objects.filter(employee_id=employee_id)
+
 class EmployeeBankByEIDViewSet(generics.ListAPIView):
     serializer_class = EmployeeBankSerializer
     authentication_classes = [JWTAuthentication]
@@ -354,14 +363,6 @@ class EmployeeBankByEIDViewSet(generics.ListAPIView):
     def get_queryset(self):
         employee_id = self.kwargs["employee_id"]
         return EmployeeBank.objects.filter(employee_id=employee_id)
-
-class EmployeeSalaryByEIDViewSet(generics.ListAPIView):
-    serializer_class = EmployeeSalarySerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    def get_queryset(self):
-        employee_id=self.kwargs["employee_id"]
-        return EmployeeSalary.objects.filter(employee_id=employee_id)
 
     
 company_list = ComapnyViewSet.as_view({"get":"list"})
