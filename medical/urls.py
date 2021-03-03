@@ -20,7 +20,7 @@ from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from DjangoMedicalApp import views
-from DjangoMedicalApp.views import CompanyNameViewSet, CompanyOnlyViewSet
+from DjangoMedicalApp.views import CompanyNameViewSet, CompanyOnlyViewSet, MedicineByNameViewSet
 
 router = routers.DefaultRouter()
 router.register("company",views.ComapnyViewSet, basename="company")
@@ -30,6 +30,7 @@ router.register("companyaccount",views.CompanyAccountViewSet, basename="companya
 router.register("employee",views.EmployeeViewset, basename="employee")
 router.register("employee_all_bank",views.EmployeeBankViewset, basename="employee_all_bank")
 router.register("employee_all_salary",views.EmployeeSalaryViewset,basename="employee_all_salary")
+router.register("generate_bill_api",views.GenerateBillViewSet,basename="generate_bill_api")
 
 
 urlpatterns = [
@@ -38,6 +39,7 @@ urlpatterns = [
     path('api/gettoken/',TokenObtainPairView.as_view(), name='gettoken'),
     path('api/refresh_token/',TokenRefreshView.as_view(), name='refresh_token'),
     path('api/companybyname/<str:name>',CompanyNameViewSet.as_view(), name='companybyname'),
+    path('api/medicinebyname/<str:name>',MedicineByNameViewSet.as_view(), name='medicinebyname'),
     path('api/companyonly/',CompanyOnlyViewSet.as_view(), name='companyonly'),
     path('api/employee_bankby_id/<str:employee_id>',views.EmployeeBankByEIDViewSet.as_view(),name="employee_bankby_id"),
     path('api/employee_salaryby_id/<str:employee_id>',views.EmployeeSalaryByEIDViewSet.as_view(),name="employee_salaryby_id"),
