@@ -377,40 +377,44 @@ class GenerateBillViewSet(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def create(self,request):
-        try:
-            #first save customer data
-            serializer=CustomerSerliazer(data=request.data,context={"request":request})
-            serializer.is_valid()
-            serializer.save()
+    def create(self, request):
+        #try:
+            #First #Save Customer Data
+        serializer = CustomerSerializer(data=request.data, context={"request": request})
+        serializer.is_valid()
+        serializer.save()
 
-            customer_id=serializer.data['id']
-            #save bill data
-            billdata = {}
-            billdata["customer_id"]=customer_id
+        customer_id = serializer.data['id']
 
-            serializer2=BillSerliazer(data=billdata,context={"request":request})
-            serializer2.is_valid()
-            serializer2.save()
-            bill_id=serializer2.data['id']
+        #Save Bill Data
+        billdata={}
+        billdata["customer_id"]=customer_id
 
-            #Adding and Saving Id into Medicine Details Table
-            medicine_details_list=[]
-            for medicine_detail in request.data["medicine_details"]:
-                medicine_detail1 = {}
-                medicine_detail1["medicine_id"]=medicine_detail.id
-                medicine_detail1["bill_id"]=bill_id
-                medicine_detail1["qty"]=medicine_detail.qty
-                medicine_details_list.append(medicine_detail)
-                #print(medicine_detail)
+        serializer2 = BillSerializer(data=billdata, context={"request": request})
+        serializer2.is_valid()
+        serializer2.save()
+        bill_id = serializer2.data['id']
 
-            serializer3=BillDetailsSerializer(data=medicine_details_list,many=True,context={"request":request})
-            serializer3.is_valid()
-            serializer3.save()
+        # Adding and Saving Id into Medicine Details Table
+        medicine_details_list = []
+        for medicine_detail in request.data["medicine_details"]:
+            print(medicine_detail)
+            medicine_detail1={}
+            medicine_detail1["medicine_id"] = medicine_detail["id"]
+            medicine_detail1["bill_id"] = bill_id
+            medicine_detail1["qty"] = medicine_detail["qty"]
 
-            dict_response={"error":False,"message":"Bill Generate Successfully"}
-        except:
-            dict_response={"error":True,"message":"Error During Generating Bill"}
+            medicine_details_list.append(medicine_detail1)
+            #print(medicine_detail)
+
+        serializer3 = BillDetailsSerializer(data=medicine_details_list, many=True,
+                                               context={"request": request})
+        serializer3.is_valid()
+        serializer3.save()
+
+        dict_response = {"error": False, "message": "Bill Generate Successfully"}
+        #except:
+            #dict_response = {"error": True, "message": "Error During Generating BIll"}
         return Response(dict_response)
 
     

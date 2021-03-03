@@ -60,7 +60,7 @@ class BillSerializer(serializers.ModelSerializer):
 
     def to_representation(self,instance):
         response = super().to_representation(instance)
-        response['customer'] = CompanySerializer(instance.customer_id).data
+        response['customer'] = CustomerSerializer(instance.customer_id).data
         return response
 
 class EmployeeSalarySerializer(serializers.ModelSerializer):
