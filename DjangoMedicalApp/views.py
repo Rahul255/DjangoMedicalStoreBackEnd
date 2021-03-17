@@ -417,6 +417,52 @@ class GenerateBillViewSet(viewsets.ViewSet):
             #dict_response = {"error": True, "message": "Error During Generating BIll"}
         return Response(dict_response)
 
+class CustomerRequestViewSet(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    # list,create,update company data
+    def list(self,request):
+        company = Company.objects.all()
+        serializer = CompanySerializer(company,many=True,context={"request":request})
+        response_dict= {"error":False,"message":"All Company List Data","data":serializer.data}
+        return Response(response_dict)
+    def create(self,request):
+        try:
+            serializer = CompanySerializer(data = request.data,context={"request":request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            response_dict= {"error":False,"message":"Company data save successfully"}
+        except:
+            response_dict= {"error":True,"message":"Error during saving company data"}
+        return Response(response_dict)
+
+    def retrieve(self, request, pk=None):
+        queryset = Company.objects.all()
+        company = get_object_or_404(queryset, pk=pk)
+        serializer = CompanySerializer(company, context={"request": request})
+
+        serializer_data = serializer.data
+        # Accessing All the Medicine Details of Current Medicine ID
+        company_bank_details = CompanyBank.objects.filter(company_id=serializer_data["id"])
+        companybank_details_serializers = CompanyBankSerializer(company_bank_details, many=True)
+        serializer_data["company_bank"] = companybank_details_serializers.data
+
+        return Response({"error": False, "message": "Single Data Fetch", "data": serializer_data})
+
+    def update(self,request,pk=None):
+        try:
+            queryset =  Company.objects.all()
+            company = get_object_or_404(queryset,pk=pk)
+            serializer = CompanySerializer(company,data = request.data,context={"request":request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            response_dict= {"error":True,"message":"Successfully updated company data"}
+        except:
+            response_dict= {"error":True,"message":"Error during updating company data"}
+
+        return Response(response_dict)
+
+
     
 company_list = ComapnyViewSet.as_view({"get":"list"})
 company_create = ComapnyViewSet.as_view({"post":"create"})
