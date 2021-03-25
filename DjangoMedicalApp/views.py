@@ -460,6 +460,15 @@ class CustomerRequestViewSet(viewsets.ViewSet):
 
         return Response(response_dict)
 
+class HomeApiViewset(viewsets.ViewSet):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def list(self,request):
+        customer_request = CustomerRequest.objects.all()
+        customer_request_serializer = CustomerRequestSerializer(customer_request,many=True,context={"request":request})
+
+        dict_response={"error":False, "message":"Home page data","customer_request":len(customer_request_serializer.data)}
+        return Response(dict_response)
 
     
 company_list = ComapnyViewSet.as_view({"get":"list"})
