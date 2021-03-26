@@ -406,6 +406,10 @@ class GenerateBillViewSet(viewsets.ViewSet):
             medicine_detail1["bill_id"] = bill_id
             medicine_detail1["qty"] = medicine_detail["qty"]
 
+            medicine_deduct=Medicine.objects.get(id=medicine_detail["id"])
+            medicine_deduct.in_stock_total=int(medicine_deduct.in_stock_total)-int(medicine_detail['qty'])
+            medicine_deduct.save()
+
             medicine_details_list.append(medicine_detail1)
             #print(medicine_detail)
 
@@ -508,8 +512,8 @@ class HomeApiViewset(viewsets.ViewSet):
         buy_amt_today = 0
 
         for bill in bill_details_today:
-            buy_amt_today = buy_amt_today + float(bill.medicine_id.buy_price)
-            sell_amt_today = sell_amt_today + float(bill.medicine_id.sell_price)
+            buy_amt_today = float(buy_amt_today + float(bill.medicine_id.buy_price))*int(bill.qty)
+            sell_amt_today = float(sell_amt_today + float(bill.medicine_id.sell_price))*int(bill.qty)
 
         profit_amt_today = sell_amt_today - buy_amt_today
 
